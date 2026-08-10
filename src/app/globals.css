@@ -1,27 +1,143 @@
+@import "maplibre-gl/dist/maplibre-gl.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@layer base {
+  /*
+   * Color tokens are bare "L C H" oklch channels (no oklch() wrapper) so
+   * tailwind.config.ts can splice in an alpha via oklch(var(--x) / <alpha-value>)
+   * and opacity modifiers like bg-primary/20 work correctly.
+   */
+  :root {
+    --background: 1 0 0;
+    --foreground: 0.145 0.01 150;
+    --card: 1 0 0;
+    --card-foreground: 0.145 0.01 150;
+    --popover: 1 0 0;
+    --popover-foreground: 0.145 0.01 150;
+    --primary: 0.55 0.15 145;
+    --primary-foreground: 0.98 0.01 145;
+    --secondary: 0.96 0.015 145;
+    --secondary-foreground: 0.25 0.04 150;
+    --muted: 0.96 0.015 145;
+    --muted-foreground: 0.5 0.02 150;
+    --accent: 0.93 0.03 145;
+    --accent-foreground: 0.25 0.04 150;
+    --destructive: 0.58 0.24 27;
+    --destructive-foreground: 0.98 0.01 20;
+    --border: oklch(0.9 0.01 150);
+    --input: oklch(0.9 0.01 150);
+    --ring: oklch(0.55 0.15 145);
+    /* Categorical series — validated CVD-safe order, do not reorder (see dataviz skill) */
+    --chart-1: #2a78d6; /* Irrigation Systems (blue) */
+    --chart-2: #eb6834; /* Equipment Maintenance (orange) */
+    --chart-3: #1baf7a; /* Crop Nutrition (aqua/green) */
+    --chart-4: #eda100; /* Pest Control (amber) */
+    --chart-5: #e87ba4; /* Logistics & Distribution (magenta) */
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 0.16 0.018 155;
+    --foreground: 0.96 0.008 120;
+    --card: 0.21 0.025 155;
+    --card-foreground: 0.96 0.008 120;
+    --popover: 0.21 0.025 155;
+    --popover-foreground: 0.96 0.008 120;
+    --primary: 0.75 0.17 145;
+    --primary-foreground: 0.16 0.03 155;
+    --secondary: 0.28 0.03 155;
+    --secondary-foreground: 0.96 0.008 120;
+    --muted: 0.26 0.025 155;
+    --muted-foreground: 0.7 0.02 130;
+    --accent: 0.3 0.05 150;
+    --accent-foreground: 0.96 0.008 120;
+    --destructive: 0.65 0.2 25;
+    --destructive-foreground: 0.98 0.01 20;
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.6 0.1 150);
+    /* Categorical series — validated CVD-safe order, do not reorder (see dataviz skill) */
+    --chart-1: #3987e5; /* Irrigation Systems (blue) */
+    --chart-2: #d95926; /* Equipment Maintenance (orange) */
+    --chart-3: #199e70; /* Crop Nutrition (aqua/green) */
+    --chart-4: #c98500; /* Pest Control (amber) */
+    --chart-5: #d55181; /* Logistics & Distribution (magenta) */
+  }
+
+  * {
+    @apply border-border outline-none;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Light mode: warm aerial-cropland gradient (golden wheat + green fields),
+     evoking the reference photo without hotlinking an external image. */
+  .farm-backdrop {
+    background-image:
+      radial-gradient(ellipse 90% 60% at 15% 5%, oklch(0.83 0.13 95 / 60%), transparent 55%),
+      radial-gradient(ellipse 85% 70% at 90% 15%, oklch(0.72 0.15 125 / 45%), transparent 60%),
+      radial-gradient(ellipse 110% 80% at 50% 105%, oklch(0.58 0.14 145 / 55%), transparent 65%),
+      linear-gradient(150deg, oklch(0.9 0.08 100) 0%, oklch(0.8 0.12 130) 45%, oklch(0.64 0.13 145) 100%);
+  }
+
+  /* Dark mode: deep green dusk gradient. */
+  .dark .farm-backdrop {
+    background-image:
+      radial-gradient(ellipse 120% 80% at 20% -10%, oklch(0.32 0.07 145 / 55%), transparent 60%),
+      radial-gradient(ellipse 100% 70% at 100% 110%, oklch(0.24 0.06 160 / 60%), transparent 60%),
+      linear-gradient(160deg, oklch(0.19 0.03 150) 0%, oklch(0.13 0.02 155) 55%, oklch(0.1 0.015 155) 100%);
+  }
+
+  .farm-backdrop::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .dark .farm-backdrop::before {
+    opacity: 0.05;
+  }
+
+  .glass-panel {
+    background-color: oklch(1 0 0 / 62%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid oklch(1 0 0 / 45%);
+    box-shadow: 0 8px 24px oklch(0.3 0.05 145 / 10%);
+  }
+
+  .dark .glass-panel {
+    background-color: oklch(0.21 0.025 155 / 68%);
+    border: 1px solid oklch(1 0 0 / 10%);
+    box-shadow: none;
+  }
+
+  .glass-panel-strong {
+    background-color: oklch(1 0 0 / 78%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid oklch(1 0 0 / 55%);
+    box-shadow: 0 8px 24px oklch(0.3 0.05 145 / 12%);
+  }
+
+  .dark .glass-panel-strong {
+    background-color: oklch(0.15 0.02 155 / 82%);
+    border: 1px solid oklch(1 0 0 / 12%);
+    box-shadow: none;
   }
 }

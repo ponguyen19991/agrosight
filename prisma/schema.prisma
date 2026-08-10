@@ -1,0 +1,123 @@
+// Prisma schema for AgroSight — Smart Farm Monitoring
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Farm {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  lat       Float
+  lng       Float
+  timezone  String   @default("auto")
+  createdAt DateTime @default(now())
+
+  fields              Field[]
+  resourceAllocations ResourceAllocation[]
+
+  @@map("farms")
+}
+
+model Field {
+  id        String        @id @default(cuid())
+  farmId    String
+  farm      Farm          @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  name      String
+  cropType  String
+  areaHectares Float
+  status    FieldStatus   @default(HEALTHY)
+
+  soilMoisturePct         Float
+  temperatureC            Float
+  growthStage             String
+  healthScore             Int
+  phLevel                 Float
+  humidityPct             Float
+  waterConsumptionL       Float
+  fertilizerEfficiencyPct Float
+  equipmentStatus         EquipmentStatus @default(ACTIVE)
+
+  // GeoJSON Polygon geometry, e.g. { "type": "Polygon", "coordinates": [[[lng,lat], ...]] }
+  boundary  Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  performanceLogs PerformanceLog[]
+  yieldRecords    YieldRecord[]
+
+  @@index([farmId])
+  @@map("fields")
+}
+
+enum FieldStatus {
+  HEALTHY
+  STABLE
+  WARNING
+  CRITICAL
+}
+
+enum EquipmentStatus {
+  ACTIVE
+  MAINTENANCE
+  OFFLINE
+}
+
+model ResourceAllocation {
+  id         String            @id @default(cuid())
+  farmId     String
+  farm       Farm              @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  category   ResourceCategory
+  percentage Float
+  period     ResourcePeriod    @default(WEEK)
+
+  @@unique([farmId, category, period])
+  @@index([farmId])
+  @@map("resource_allocations")
+}
+
+enum ResourceCategory {
+  IRRIGATION_SYSTEMS
+  CROP_NUTRITION
+  EQUIPMENT_MAINTENANCE
+  PEST_CONTROL
+  LOGISTICS_DISTRIBUTION
+}
+
+enum ResourcePeriod {
+  WEEK
+  MONTH
+  YEAR
+}
+
+model PerformanceLog {
+  id        String @id @default(cuid())
+  fieldId   String
+  field     Field  @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  dayOfWeek Int // 0 = Monday .. 6 = Sunday
+  hour      Int // 13 = 1pm, 14 = 2pm, ...
+  score     Int // 0-100 performance/activity score for the heatmap cell
+
+  @@unique([fieldId, dayOfWeek, hour])
+  @@index([fieldId])
+  @@map("performance_logs")
+}
+
+model YieldRecord {
+  id       String   @id @default(cuid())
+  fieldId  String
+  field    Field    @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  date     DateTime
+  cropType String
+  valueKg  Float
+
+  @@index([fieldId])
+  @@map("yield_records")
+}
