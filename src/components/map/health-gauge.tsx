@@ -81,7 +81,7 @@ export function HealthGauge({ score, size = 220 }: HealthGaugeProps) {
       </svg>
       <div
         className="absolute left-1/2 flex flex-col items-center text-center"
-        style={{ top: "56%", transform: "translate(-50%, -50%)" }}
+        style={{ top: "67%", transform: "translate(-50%, -50%)" }}
       >
         <span className="text-2xl font-semibold tabular-nums">{clamped}%</span>
         <span className="text-[11px] text-muted-foreground">Health Score</span>

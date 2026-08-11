@@ -1,15 +1,9 @@
 "use client";
 
-import { Droplets, FlaskConical, LandPlot, Sprout, X } from "lucide-react";
+import { X } from "lucide-react";
 import { HealthGauge } from "@/components/map/health-gauge";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import {
-  EQUIPMENT_STATUS_DOT_CLASS,
-  EQUIPMENT_STATUS_LABEL,
-  FIELD_STATUS_BADGE_CLASS,
-  FIELD_STATUS_LABEL,
-} from "@/lib/field-status";
+import { EQUIPMENT_STATUS_DOT_CLASS, EQUIPMENT_STATUS_LABEL } from "@/lib/field-status";
 import type { FieldSummary } from "@/types";
 
 interface FieldPopupProps {
@@ -19,16 +13,11 @@ interface FieldPopupProps {
 
 export function FieldPopup({ field, onClose }: FieldPopupProps) {
   return (
-    <div className="glass-panel-strong w-[280px] rounded-2xl p-4 text-sm shadow-2xl">
+    <div className="glass-panel-strong w-[280px] max-w-[calc(100vw-2rem)] rounded-2xl p-4 text-sm shadow-2xl">
       <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/15 text-primary">
-            <Sprout className="h-4 w-4" />
-          </span>
-          <div>
-            <p className="font-medium leading-tight">{field.name}</p>
-            <p className="text-xs text-muted-foreground">{field.cropType} Plantation</p>
-          </div>
+        <div>
+          <p className="font-semibold leading-tight">{field.name}</p>
+          <p className="text-xs text-muted-foreground">{field.cropType} Plantation</p>
         </div>
         <button
           type="button"
@@ -40,14 +29,14 @@ export function FieldPopup({ field, onClose }: FieldPopupProps) {
         </button>
       </div>
 
-      <div className="mt-3 flex items-center justify-center">
-        <HealthGauge score={field.healthScore} />
+      <div className="mt-2 flex items-center justify-center">
+        <HealthGauge score={field.healthScore} size={248} />
       </div>
 
-      <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-        <MiniStat icon={Droplets} label="Humidity" value={`${field.humidityPct}%`} />
-        <MiniStat icon={FlaskConical} label="pH Level" value={field.phLevel.toFixed(1)} />
-        <MiniStat icon={LandPlot} label="Hectare" value={field.areaHectares.toString()} />
+      <div className="mt-2 flex items-center justify-between">
+        <Stat value={`${field.humidityPct}%`} label="Humidity" />
+        <Stat value={field.phLevel.toFixed(1)} label="Ph Level" />
+        <Stat value={field.areaHectares.toString()} label="Hectare" />
       </div>
 
       <div className="mt-3 space-y-2 border-t border-border pt-3">
@@ -65,35 +54,17 @@ export function FieldPopup({ field, onClose }: FieldPopupProps) {
             {EQUIPMENT_STATUS_LABEL[field.equipmentStatus]}
           </span>
         </div>
-        <div className="flex items-center justify-between">
-          <span className="text-muted-foreground">Field Status</span>
-          <Badge
-            variant="outline"
-            className={cn("font-medium", FIELD_STATUS_BADGE_CLASS[field.status])}
-          >
-            {FIELD_STATUS_LABEL[field.status]}
-          </Badge>
-        </div>
       </div>
     </div>
   );
 }
 
-function MiniStat({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string;
-}) {
+function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-lg bg-foreground/5 px-2 py-2">
-      <Icon className="mx-auto h-3.5 w-3.5 text-primary" />
-      <p className="mt-1 text-sm font-medium">{value}</p>
-      <p className="text-[10px] text-muted-foreground">{label}</p>
-    </div>
+    <span className="whitespace-nowrap">
+      <span className="font-semibold">{value}</span>{" "}
+      <span className="text-muted-foreground">{label}</span>
+    </span>
   );
 }
 

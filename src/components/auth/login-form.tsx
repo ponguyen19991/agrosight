@@ -52,124 +52,132 @@ export function LoginForm() {
   };
 
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-2">
-      {/* Brand panel — always dark, independent of the app theme toggle */}
-      <div
-        className="relative hidden flex-col justify-between overflow-hidden p-10 text-white md:flex"
-        style={{
-          backgroundImage:
-            "radial-gradient(ellipse 120% 80% at 20% -10%, oklch(0.32 0.07 145 / 55%), transparent 60%), radial-gradient(ellipse 100% 70% at 100% 110%, oklch(0.24 0.06 160 / 60%), transparent 60%), linear-gradient(160deg, oklch(0.19 0.03 150) 0%, oklch(0.13 0.02 155) 55%, oklch(0.1 0.015 155) 100%)",
-        }}
-      >
-        <div>
-          <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-wide text-white/90 backdrop-blur">
-            Smart Farm Platform
-          </span>
-          <h1 className="mt-6 max-w-md text-4xl font-semibold leading-tight">
-            Manage Your Farm Better with AI-Powered Insights
-          </h1>
-          <p className="mt-4 max-w-sm text-sm text-white/70">
-            Track fields, monitor weather and resources, and get AI guidance —
-            all in one dashboard.
-          </p>
-        </div>
-
-        <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-white/25 bg-white/5 text-sm text-white/50">
-          Hình ảnh
-        </div>
-      </div>
-
-      {/* Form panel */}
-      <div
-        className="flex items-center justify-center px-6 py-12"
-        style={{
-          backgroundImage:
-            "radial-gradient(ellipse 90% 60% at 50% 0%, oklch(var(--secondary) / 60%), transparent 60%), oklch(var(--background))",
-        }}
-      >
-        <div className="w-full max-w-md">
-          <Image
-            src="/images/banner-non-bg.png"
-            alt="AgroSight"
-            width={517}
-            height={205}
-            className="h-16 w-auto object-contain object-left"
-            priority
-          />
-
-          <h2 className="mt-8 text-2xl font-semibold">Login to account</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Access your farm dashboard from anywhere.
-          </p>
-
-          <Button
-            type="button"
-            variant="outline"
-            className="mt-6 h-11 w-full gap-2 text-base"
-            onClick={() => router.push("/dashboard")}
-          >
-            <GoogleIcon />
-            Continue with Google
-          </Button>
-
-          <div className="my-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-border" />
-            <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-              Or sign in with email
+    <div className="flex min-h-screen w-full items-center justify-center bg-background p-4 sm:p-6">
+      <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-border shadow-2xl md:min-h-[640px] md:grid-cols-2">
+        {/* Brand panel — always dark, independent of the app theme toggle */}
+        <div
+          className="relative hidden flex-col justify-between p-10 text-white md:flex"
+          style={{
+            backgroundImage:
+              "radial-gradient(ellipse 120% 80% at 20% -10%, oklch(0.32 0.07 145 / 55%), transparent 60%), radial-gradient(ellipse 100% 70% at 100% 110%, oklch(0.24 0.06 160 / 60%), transparent 60%), linear-gradient(160deg, oklch(0.19 0.03 150) 0%, oklch(0.13 0.02 155) 55%, oklch(0.1 0.015 155) 100%)",
+          }}
+        >
+          <div>
+            <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-wide text-white/90 backdrop-blur">
+              Smart Farm Platform
             </span>
-            <div className="h-px flex-1 bg-border" />
+            <h1 className="mt-6 max-w-md text-4xl font-semibold leading-tight">
+              Manage Your Farm Better with AI-Powered Insights
+            </h1>
+            <p className="mt-4 max-w-sm text-sm text-white/70">
+              Track fields, monitor weather and resources, and get AI guidance —
+              all in one dashboard.
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-1.5">
-              <Label htmlFor="email">Email address</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="farmer@agrosight.com"
-                className="h-11 text-base"
-                required
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Password"
-                className="h-11 text-base"
-                required
-              />
-            </div>
+          <div className="relative h-80 w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+            <Image
+              src="/images/banner1.png"
+              alt="AgroSight dashboard preview"
+              fill
+              className="object-cover object-top"
+              sizes="(min-width: 768px) 50vw, 100vw"
+            />
+          </div>
+        </div>
 
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 text-muted-foreground">
-                <Checkbox />
-                Remember me
-              </label>
-              <Link href="/login" className="font-medium text-primary hover:underline">
-                Forgot password?
-              </Link>
-            </div>
+        {/* Form panel */}
+        <div
+          className="flex items-center justify-center px-6 py-12"
+          style={{
+            backgroundImage:
+              "radial-gradient(ellipse 90% 60% at 50% 0%, oklch(var(--secondary) / 60%), transparent 60%), oklch(var(--background))",
+          }}
+        >
+          <div className="w-full max-w-md">
+            <Image
+              src="/images/banner-non-bg.png"
+              alt="AgroSight"
+              width={517}
+              height={205}
+              className="h-16 w-auto object-contain object-left"
+              priority
+            />
 
-            <Button type="submit" className="h-11 w-full text-base" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Logging in...
-                </>
-              ) : (
-                "Login"
-              )}
+            <h2 className="mt-8 text-2xl font-semibold">Login to account</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Access your farm dashboard from anywhere.
+            </p>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-6 h-11 w-full gap-2 text-base"
+              onClick={() => router.push("/dashboard")}
+            >
+              <GoogleIcon />
+              Continue with Google
             </Button>
-          </form>
 
-          <p className="mt-6 text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <Link href="/login" className="font-medium text-primary hover:underline">
-              Register new account
-            </Link>
-          </p>
+            <div className="my-6 flex items-center gap-3">
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                Or sign in with email
+              </span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-1.5">
+                <Label htmlFor="email">Email address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="farmer@agrosight.com"
+                  className="h-11 text-base"
+                  required
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Password"
+                  className="h-11 text-base"
+                  required
+                />
+              </div>
+
+              <div className="flex items-center justify-between text-sm">
+                <label className="flex items-center gap-2 text-muted-foreground">
+                  <Checkbox />
+                  Remember me
+                </label>
+                <Link href="/login" className="font-medium text-primary hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
+
+              <Button type="submit" className="h-11 w-full text-base" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Logging in...
+                  </>
+                ) : (
+                  "Login"
+                )}
+              </Button>
+            </form>
+
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+              Don&apos;t have an account?{" "}
+              <Link href="/login" className="font-medium text-primary hover:underline">
+                Register new account
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

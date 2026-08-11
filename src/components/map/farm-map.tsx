@@ -72,6 +72,11 @@ export function FarmMap({
   const mapRef = useRef<MapLibreMap | null>(null);
   const previousSelectedId = useRef<string | null>(null);
   const hoveredFieldRef = useRef<string | null>(null);
+  // Always mirrors the latest `fields` prop so the map's "move" listener
+  // (registered once, when the layers are first added) never reads a stale
+  // closure — without this, screen positions silently reset to empty on the
+  // next pan/zoom/flyTo after `fields` loads in later than the first render.
+  const fieldsRef = useRef(fields);
 
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
@@ -80,18 +85,24 @@ export function FarmMap({
   const styleUrl = getMapTilerStyleUrl();
   const selectedField = fields.find((field) => field.id === selectedFieldId) ?? null;
 
+  useEffect(() => {
+    fieldsRef.current = fields;
+  }, [fields]);
+
   // Recompute every field's screen position (drives labels + the popup).
+  // Stable reference (reads fields via ref) so the "move" listener below
+  // always sees current data, no matter when it was registered.
   const updateScreenPositions = useCallback(() => {
     const map = mapRef.current;
     if (!map) return;
     const next: Record<string, ScreenPos> = {};
-    for (const field of fields) {
+    for (const field of fieldsRef.current) {
       const [lng, lat] = centroidOf(field.boundary);
       const point = map.project([lng, lat]);
       next[field.id] = { x: point.x, y: point.y };
     }
     setScreenPositions(next);
-  }, [fields]);
+  }, []);
 
   // Mount the map once we have a style URL.
   useEffect(() => {
@@ -284,7 +295,7 @@ export function FarmMap({
 
   if (!styleUrl) {
     return (
-      <div className="glass-panel-strong relative flex h-[780px] w-full flex-col items-center justify-center gap-2 rounded-2xl px-8 text-center">
+      <div className="glass-panel-strong relative flex h-[420px] w-full flex-col items-center justify-center gap-2 rounded-2xl px-8 text-center sm:h-[520px] lg:h-[650px] xl:h-[780px]">
         <AlertTriangle className="h-6 w-6 text-muted-foreground" />
         <p className="text-sm font-medium">Satellite map unavailable</p>
         <p className="max-w-sm text-xs text-muted-foreground">
@@ -308,7 +319,7 @@ export function FarmMap({
   return (
     <div
       ref={wrapperRef}
-      className="glass-panel-strong relative h-[780px] w-full overflow-hidden rounded-2xl [&:fullscreen]:h-screen [&:fullscreen]:rounded-none"
+      className="glass-panel-strong relative h-[420px] w-full overflow-hidden rounded-2xl [&:fullscreen]:h-screen [&:fullscreen]:rounded-none sm:h-[520px] lg:h-[650px] xl:h-[780px]"
     >
       <div ref={containerRef} className="h-full w-full" />
 
@@ -371,18 +382,39 @@ export function FarmMap({
         <MapControls mapRef={mapRef} containerRef={wrapperRef} onRecenter={handleRecenter} />
       )}
 
-      {selectedField && screenPositions[selectedField.id] && (
-        <div
-          className="pointer-events-auto absolute z-20"
-          style={{
-            left: screenPositions[selectedField.id].x,
-            top: screenPositions[selectedField.id].y,
-            transform: "translate(-50%, -112%)",
-          }}
-        >
-          <FieldPopup field={selectedField} onClose={() => onSelectField(null)} />
-        </div>
-      )}
+      {selectedField &&
+        screenPositions[selectedField.id] &&
+        (() => {
+          const raw = screenPositions[selectedField.id];
+          const container = wrapperRef.current;
+          const containerWidth = container?.clientWidth ?? 0;
+          const containerHeight = container?.clientHeight ?? 0;
+          const popupHalfWidth = 140; // half of FieldPopup's w-[280px]
+          const popupHeightEstimate = 340; // enough room to flip below near the top edge
+          const margin = 12;
+
+          const left = containerWidth
+            ? Math.min(
+                Math.max(raw.x, popupHalfWidth + margin),
+                containerWidth - popupHalfWidth - margin
+              )
+            : raw.x;
+          const flipBelow =
+            containerHeight > 0 && raw.y < popupHeightEstimate + margin;
+
+          return (
+            <div
+              className="pointer-events-auto absolute z-20"
+              style={{
+                left,
+                top: raw.y,
+                transform: flipBelow ? "translate(-50%, 12%)" : "translate(-50%, -112%)",
+              }}
+            >
+              <FieldPopup field={selectedField} onClose={() => onSelectField(null)} />
+            </div>
+          );
+        })()}
     </div>
   );
 }

@@ -71,35 +71,37 @@ export function WeeklyPerformanceCard({ cells, isLoading }: WeeklyPerformanceCar
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-[2.5rem_repeat(7,1fr)] gap-1 text-[10px] text-muted-foreground">
-              <div />
-              {DAYS.map((day) => (
-                <div key={day} className="text-center">
-                  {day}
-                </div>
-              ))}
-              {HOURS.map((hour) => (
-                <div key={hour} className="contents">
-                  <div className="flex items-center">{formatHour(hour)}</div>
-                  {DAYS.map((_, dayIndex) => {
-                    const score = byKey.get(`${dayIndex}-${hour}`) ?? 0;
-                    const color = HEAT_COLORS[tierOf(score)];
-                    return (
-                      <Tooltip key={`${dayIndex}-${hour}`}>
-                        <TooltipTrigger asChild>
-                          <div
-                            className="h-6 w-full rounded-sm"
-                            style={{ backgroundColor: color }}
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          {DAYS[dayIndex]} {formatHour(hour)}: {score}
-                        </TooltipContent>
-                      </Tooltip>
-                    );
-                  })}
-                </div>
-              ))}
+            <div className="overflow-x-auto">
+              <div className="min-w-[420px] grid grid-cols-[2.5rem_repeat(7,1fr)] gap-1 text-[10px] text-muted-foreground">
+                <div />
+                {DAYS.map((day) => (
+                  <div key={day} className="text-center">
+                    {day}
+                  </div>
+                ))}
+                {HOURS.map((hour) => (
+                  <div key={hour} className="contents">
+                    <div className="flex items-center">{formatHour(hour)}</div>
+                    {DAYS.map((_, dayIndex) => {
+                      const score = byKey.get(`${dayIndex}-${hour}`) ?? 0;
+                      const color = HEAT_COLORS[tierOf(score)];
+                      return (
+                        <Tooltip key={`${dayIndex}-${hour}`}>
+                          <TooltipTrigger asChild>
+                            <div
+                              className="h-6 w-full rounded-sm"
+                              style={{ backgroundColor: color }}
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {DAYS[dayIndex]} {formatHour(hour)}: {score}
+                          </TooltipContent>
+                        </Tooltip>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="mt-3 flex items-center justify-end gap-1.5 text-[10px] text-muted-foreground">
@@ -123,19 +125,21 @@ export function WeeklyPerformanceCard({ cells, isLoading }: WeeklyPerformanceCar
 function WeeklyPerformanceSkeleton() {
   return (
     <>
-      <div className="grid grid-cols-[2.5rem_repeat(7,1fr)] gap-1.5">
-        <div />
-        {DAYS.map((day) => (
-          <Skeleton key={day} className="mx-auto h-2.5 w-6" />
-        ))}
-        {HOURS.map((hour) => (
-          <div key={hour} className="contents">
-            <Skeleton className="my-auto h-2.5 w-6" />
-            {DAYS.map((_, dayIndex) => (
-              <Skeleton key={`${dayIndex}-${hour}`} className="h-7 w-full rounded-lg" />
-            ))}
-          </div>
-        ))}
+      <div className="overflow-x-auto">
+        <div className="min-w-[420px] grid grid-cols-[2.5rem_repeat(7,1fr)] gap-1.5">
+          <div />
+          {DAYS.map((day) => (
+            <Skeleton key={day} className="mx-auto h-2.5 w-6" />
+          ))}
+          {HOURS.map((hour) => (
+            <div key={hour} className="contents">
+              <Skeleton className="my-auto h-2.5 w-6" />
+              {DAYS.map((_, dayIndex) => (
+                <Skeleton key={`${dayIndex}-${hour}`} className="h-7 w-full rounded-lg" />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="mt-3 flex items-center justify-end gap-1.5">

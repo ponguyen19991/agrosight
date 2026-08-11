@@ -18,6 +18,7 @@ import {
   Sun,
   User,
   Users,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -34,6 +35,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: "Dashboard", active: true },
@@ -50,7 +57,7 @@ interface SidebarProps {
 
 export function Sidebar({ onOpenChat }: SidebarProps) {
   return (
-    <aside className="glass-panel-strong flex h-full w-16 shrink-0 flex-col items-center justify-between rounded-2xl py-4">
+    <aside className="glass-panel-strong hidden h-full w-16 shrink-0 flex-col items-center justify-between rounded-2xl py-4 lg:flex">
       <div className="flex flex-col items-center gap-2">
         <div className="mb-3 flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl">
           <Image
@@ -84,6 +91,94 @@ export function Sidebar({ onOpenChat }: SidebarProps) {
         <UserMenu />
       </div>
     </aside>
+  );
+}
+
+interface MobileSidebarProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onOpenChat: () => void;
+}
+
+export function MobileSidebar({ open, onOpenChange, onOpenChat }: MobileSidebarProps) {
+  const closeThen = (fn?: () => void) => () => {
+    fn?.();
+    onOpenChange(false);
+  };
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent showClose={false} side="left" className="flex w-72 flex-col gap-0 p-0">
+        <SheetHeader className="flex-row items-center justify-between space-y-0 border-b border-border px-4 py-4 text-left">
+          <SheetTitle className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg">
+              <Image
+                src="/images/logo-farm.png"
+                alt="AgroSight logo"
+                width={32}
+                height={32}
+                className="h-full w-full object-cover"
+              />
+            </span>
+            AgroSight
+          </SheetTitle>
+          <button
+            type="button"
+            onClick={() => onOpenChange(false)}
+            aria-label="Close menu"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </SheetHeader>
+
+        <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
+          {NAV_ITEMS.map((item) => (
+            <MobileNavRow key={item.label} icon={item.icon} label={item.label} active={item.active} onClick={closeThen()} />
+          ))}
+
+          <div className="my-2 h-px bg-border" />
+
+          <MobileNavRow icon={Sparkles} label="AI Assistant" highlight onClick={closeThen(onOpenChat)} />
+          <MobileNavRow icon={Settings} label="Settings" onClick={closeThen()} />
+          <MobileNavRow icon={Info} label="About" onClick={closeThen()} />
+        </nav>
+
+        <div className="flex items-center justify-between border-t border-border px-4 py-3">
+          <UserMenu />
+          <ThemeToggle />
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+function MobileNavRow({
+  icon: Icon,
+  label,
+  active,
+  highlight,
+  onClick,
+}: {
+  icon: React.ElementType;
+  label: string;
+  active?: boolean;
+  highlight?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+        active && "bg-accent text-primary",
+        highlight && "text-primary"
+      )}
+    >
+      <Icon className="h-[18px] w-[18px]" />
+      {label}
+    </button>
   );
 }
 

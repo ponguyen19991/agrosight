@@ -131,7 +131,7 @@ export function ResourceMonitoringCard({ allocations, isLoading }: ResourceMonit
           </div>
         ) : (
           <div className="mt-4 flex items-center gap-3">
-            <ul className="flex-1 space-y-3">
+            <ul className="min-w-0 flex-1 space-y-3">
               {data.map((entry) => (
                 <li key={entry.category} className="flex items-center gap-2 text-xs">
                   <span

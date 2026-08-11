@@ -21,8 +21,10 @@ export function FieldLabel({ name, cropType, isActive, onClick }: FieldLabelProp
       )}
     >
       <Sprout className="h-4 w-4" />
-      <span className="text-xs font-semibold leading-tight">{name}</span>
-      <span className="text-[10px] leading-tight text-white/80">{cropType}</span>
+      <span className="max-w-[96px] truncate text-xs font-semibold leading-tight">{name}</span>
+      <span className="max-w-[96px] truncate text-[10px] leading-tight text-white/80">
+        {cropType}
+      </span>
     </button>
   );
 }

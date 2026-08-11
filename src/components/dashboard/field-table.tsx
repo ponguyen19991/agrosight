@@ -134,7 +134,7 @@ export function FieldTable({
 
   return (
     <Card className="glass-panel border-0">
-      <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
+      <CardHeader className="flex-col items-start gap-2 space-y-0 pb-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="font-medium">Field Monitoring Overview</p>
           <p className="text-xs text-muted-foreground">
@@ -142,7 +142,7 @@ export function FieldTable({
             {checkedIds.size > 0 ? ` · ${checkedIds.size} selected` : ""}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="secondary" size="sm" className="gap-1.5 text-xs">
