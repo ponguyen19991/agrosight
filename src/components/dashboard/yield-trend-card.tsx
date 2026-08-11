@@ -11,7 +11,10 @@ import {
   YAxis,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { YieldTrendPoint } from "@/types";
+
+const SKELETON_BAR_HEIGHTS = [35, 55, 40, 70, 50, 85];
 
 interface YieldTrendCardProps {
   points: YieldTrendPoint[];
@@ -31,9 +34,19 @@ export function YieldTrendCard({ points, isLoading }: YieldTrendCardProps) {
         <p className="text-xs text-muted-foreground">Total harvest across all fields, by month</p>
       </CardHeader>
       <CardContent>
-        {isLoading || data.length === 0 ? (
+        {isLoading ? (
+          <div className="flex h-[160px] items-end gap-3 px-1 pb-1">
+            {SKELETON_BAR_HEIGHTS.map((height, i) => (
+              <Skeleton
+                key={i}
+                className="flex-1 rounded-t-md"
+                style={{ height: `${height}%` }}
+              />
+            ))}
+          </div>
+        ) : data.length === 0 ? (
           <div className="flex h-[160px] items-center justify-center text-sm text-muted-foreground">
-            {isLoading ? "Loading..." : "No yield data yet."}
+            No yield data yet.
           </div>
         ) : (
           <div className="h-[160px]">
@@ -41,36 +54,39 @@ export function YieldTrendCard({ points, isLoading }: YieldTrendCardProps) {
               <AreaChart data={data} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="yieldFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--chart-3)" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="var(--chart-3)" stopOpacity={0} />
+                    <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid vertical={false} stroke="oklch(1 0 0 / 8%)" />
+                <CartesianGrid vertical={false} stroke="oklch(var(--foreground) / 8%)" />
                 <XAxis
                   dataKey="label"
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fill: "oklch(0.7 0.02 130)", fontSize: 11 }}
+                  tick={{ fill: "oklch(var(--muted-foreground))", fontSize: 11 }}
                 />
                 <YAxis
                   tickLine={false}
                   axisLine={false}
                   width={40}
-                  tick={{ fill: "oklch(0.7 0.02 130)", fontSize: 11 }}
+                  tick={{ fill: "oklch(var(--muted-foreground))", fontSize: 11 }}
                 />
                 <Tooltip
                   contentStyle={{
-                    background: "oklch(0.15 0.02 155)",
-                    border: "1px solid oklch(1 0 0 / 12%)",
+                    background: "oklch(var(--popover))",
+                    border: "1px solid var(--border)",
                     borderRadius: 8,
                     fontSize: 12,
+                    color: "oklch(var(--popover-foreground))",
                   }}
+                  labelStyle={{ color: "oklch(var(--popover-foreground))" }}
+                  itemStyle={{ color: "oklch(var(--popover-foreground))" }}
                   formatter={(value) => [`${Number(value).toLocaleString()} kg`, "Yield"]}
                 />
                 <Area
                   type="monotone"
                   dataKey="valueKg"
-                  stroke="var(--chart-3)"
+                  stroke="var(--chart-1)"
                   strokeWidth={2}
                   fill="url(#yieldFill)"
                 />

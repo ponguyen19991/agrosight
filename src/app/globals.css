@@ -35,13 +35,21 @@
     --border: oklch(0.9 0.01 150);
     --input: oklch(0.9 0.01 150);
     --ring: oklch(0.55 0.15 145);
-    /* Categorical series — validated CVD-safe order, do not reorder (see dataviz skill) */
-    --chart-1: #2a78d6; /* Irrigation Systems (blue) */
-    --chart-2: #eb6834; /* Equipment Maintenance (orange) */
-    --chart-3: #1baf7a; /* Crop Nutrition (aqua/green) */
-    --chart-4: #eda100; /* Pest Control (amber) */
-    --chart-5: #e87ba4; /* Logistics & Distribution (magenta) */
+    /* Categorical series — chosen to match the reference mockup's green-forward
+       look; mitigated for CVD via direct on-chart + legend text labels (see
+       resource-monitoring-card.tsx), not by hue separation alone. */
+    --chart-1: #0f5132; /* Irrigation Systems (dark green) */
+    --chart-2: #178a5d; /* Crop Nutrition (medium green) */
+    --chart-3: #7cc142; /* Equipment Maintenance (light green) */
+    --chart-4: #e0940a; /* Pest Control (orange) */
+    --chart-5: #e0483e; /* Logistics & Distribution (red) */
     --radius: 0.75rem;
+    /* Sequential heatmap ramp (Less → More), one hue light→dark */
+    --heat-1: #d3f3dc;
+    --heat-2: #a3e6b4;
+    --heat-3: #6cd694;
+    --heat-4: #22a35c;
+    --heat-5: #0f5132;
   }
 
   .dark {
@@ -64,12 +72,20 @@
     --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.6 0.1 150);
-    /* Categorical series — validated CVD-safe order, do not reorder (see dataviz skill) */
-    --chart-1: #3987e5; /* Irrigation Systems (blue) */
-    --chart-2: #d95926; /* Equipment Maintenance (orange) */
-    --chart-3: #199e70; /* Crop Nutrition (aqua/green) */
-    --chart-4: #c98500; /* Pest Control (amber) */
-    --chart-5: #d55181; /* Logistics & Distribution (magenta) */
+    /* Categorical series — chosen to match the reference mockup's green-forward
+       look; mitigated for CVD via direct on-chart + legend text labels (see
+       resource-monitoring-card.tsx), not by hue separation alone. */
+    --chart-1: #146c43; /* Irrigation Systems (dark green) */
+    --chart-2: #1f9d6b; /* Crop Nutrition (medium green) */
+    --chart-3: #8fd14f; /* Equipment Maintenance (light green) */
+    --chart-4: #f5a623; /* Pest Control (orange) */
+    --chart-5: #ef4444; /* Logistics & Distribution (red) */
+    /* Sequential heatmap ramp (Less → More), one hue light→dark */
+    --heat-1: #16351f;
+    --heat-2: #1f6b3a;
+    --heat-3: #2f9950;
+    --heat-4: #4dc46e;
+    --heat-5: #7de896;
   }
 
   * {
@@ -114,10 +130,10 @@
   }
 
   .glass-panel {
-    background-color: oklch(1 0 0 / 62%);
+    background-color: oklch(1 0 0 / 96%);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid oklch(1 0 0 / 45%);
+    border: 1px solid oklch(0.9 0.01 150 / 80%);
     box-shadow: 0 8px 24px oklch(0.3 0.05 145 / 10%);
   }
 
@@ -128,10 +144,10 @@
   }
 
   .glass-panel-strong {
-    background-color: oklch(1 0 0 / 78%);
+    background-color: oklch(1 0 0 / 98%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid oklch(1 0 0 / 55%);
+    border: 1px solid oklch(0.9 0.01 150 / 80%);
     box-shadow: 0 8px 24px oklch(0.3 0.05 145 / 12%);
   }
 

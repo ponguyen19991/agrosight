@@ -15,9 +15,9 @@ import { useFields } from "@/hooks/use-fields";
 import type { GeocodeResult } from "@/lib/geocode";
 
 const DEFAULT_LOCATION = {
-  lat: -7.4298,
-  lng: 109.234,
-  label: "Purwokerto, Central Java, Indonesia",
+  lat: 11.906,
+  lng: 108.351,
+  label: "Tà Nung, Đà Lạt, Lâm Đồng, Vietnam",
 };
 
 export function DashboardShell() {
@@ -48,11 +48,13 @@ export function DashboardShell() {
 
   return (
     <div className="farm-backdrop relative min-h-screen w-full">
-      <div className="relative z-10 flex h-screen gap-4 p-4">
-        <Sidebar onOpenChat={() => setIsChatOpen(true)} />
+      <div className="relative z-10 flex min-h-screen gap-4 p-4">
+        <div className="sticky top-4 h-[calc(100vh-2rem)] shrink-0">
+          <Sidebar onOpenChat={() => setIsChatOpen(true)} />
+        </div>
 
-        <main className="grid min-w-0 flex-1 grid-cols-[minmax(0,1fr)_400px] gap-4">
-          <div className="flex min-w-0 flex-col gap-4 overflow-y-auto pr-1">
+        <main className="grid min-w-0 flex-1 grid-cols-[minmax(0,1fr)_400px] items-start gap-4">
+          <div className="flex min-w-0 flex-col gap-4">
             <FarmMap
               center={location}
               fields={fields ?? []}
@@ -63,13 +65,13 @@ export function DashboardShell() {
               fields={fields ?? []}
               selectedFieldId={selectedFieldId}
               onSelectField={setSelectedFieldId}
-              isLoading={isFieldsLoading}
+              isLoading={isFarmsLoading || isFieldsLoading}
             />
           </div>
 
-          <div className="flex min-w-0 flex-col gap-4 overflow-y-auto pb-1 pl-1 pr-1">
+          <div className="flex min-w-0 flex-col gap-4">
             <TopBar onSelectLocation={handleSelectLocation} />
-            <WeatherCard locationLabel={location.label} lat={location.lat} lng={location.lng} />
+            <WeatherCard />
             <ResourceMonitoringCard
               allocations={farm?.resourceAllocations ?? []}
               isLoading={isFarmsLoading}

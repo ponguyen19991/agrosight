@@ -8,17 +8,36 @@ import {
 
 const prisma = new PrismaClient();
 
-const FARM_CENTER = { lat: -7.4298, lng: 109.234 };
+const FARM_CENTER = { lat: 11.906, lng: 108.351 };
 
-function square(centerLat: number, centerLng: number, sizeDeg: number) {
-  const half = sizeDeg / 2;
-  const coords = [
-    [centerLng - half, centerLat + half],
-    [centerLng + half, centerLat + half * 1.15],
-    [centerLng + half * 1.1, centerLat - half],
-    [centerLng - half * 0.9, centerLat - half * 1.05],
-    [centerLng - half, centerLat + half],
-  ];
+// Deterministic pseudo-random in [0, 1), so re-running the seed always
+// produces the same field shapes.
+function seededRandom(seed: number) {
+  const x = Math.sin(seed * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+// An irregular, organic field boundary (not a rigid rectangle) — an N-sided
+// polygon around a center point with a jittered radius per vertex.
+function organicField(
+  centerLat: number,
+  centerLng: number,
+  baseRadiusDeg: number,
+  seed: number
+) {
+  const vertexCount = 9;
+  const latCompression = Math.cos((centerLat * Math.PI) / 180);
+  const coords: number[][] = [];
+
+  for (let i = 0; i <= vertexCount; i++) {
+    const angle = (i % vertexCount) * (360 / vertexCount) * (Math.PI / 180);
+    const jitter = 0.7 + seededRandom(seed * 97 + i) * 0.6; // 0.7x - 1.3x
+    const radius = baseRadiusDeg * jitter;
+    const lng = centerLng + (radius * Math.cos(angle)) / latCompression;
+    const lat = centerLat + radius * Math.sin(angle);
+    coords.push([lng, lat]);
+  }
+
   return {
     type: "Polygon" as const,
     coordinates: [coords],
@@ -147,10 +166,10 @@ async function main() {
   const farm = await prisma.farm.create({
     data: {
       name: "AgroSight Demo Farm",
-      address: "Purwokerto, Central Java, Indonesia",
+      address: "Tà Nung, Đà Lạt, Lâm Đồng, Vietnam",
       lat: FARM_CENTER.lat,
       lng: FARM_CENTER.lng,
-      timezone: "Asia/Jakarta",
+      timezone: "Asia/Ho_Chi_Minh",
       resourceAllocations: {
         create: (Object.entries(resourceAllocationsByPeriod) as [
           keyof typeof resourceAllocationsByPeriod,
@@ -185,7 +204,7 @@ async function main() {
         waterConsumptionL: data.waterConsumptionL,
         fertilizerEfficiencyPct: data.fertilizerEfficiencyPct,
         equipmentStatus: data.equipmentStatus,
-        boundary: square(centerLat, centerLng, 0.009),
+        boundary: organicField(centerLat, centerLng, 0.0045, fieldIndex + 1),
       },
     });
 

@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
 import {
+  Calendar as CalendarIcon,
+  Check,
   Copy,
   Filter,
   MapPin,
@@ -13,8 +16,11 @@ import {
   Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -26,7 +32,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -77,10 +82,7 @@ export function FieldTable({
   const [statusFilter, setStatusFilter] = useState<Set<FieldStatus>>(new Set());
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
 
-  const monthLabel = new Date().toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const visibleFields = useMemo(
     () =>
@@ -141,9 +143,29 @@ export function FieldTable({
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm" className="text-xs">
-            {monthLabel}
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="secondary" size="sm" className="gap-1.5 text-xs">
+                <CalendarIcon className="h-3.5 w-3.5" />
+                {format(selectedDate, "MMM d, yyyy")}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="w-auto p-0"
+              align="end"
+              side="top"
+              avoidCollisions={false}
+            >
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={(date) => date && setSelectedDate(date)}
+                captionLayout="dropdown"
+                startMonth={new Date(2023, 0)}
+                endMonth={new Date(2030, 11)}
+              />
+            </PopoverContent>
+          </Popover>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -159,16 +181,20 @@ export function FieldTable({
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Filter by status</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {ALL_STATUSES.map((status) => (
-                <DropdownMenuCheckboxItem
-                  key={status}
-                  checked={statusFilter.has(status)}
-                  onCheckedChange={() => toggleStatusFilter(status)}
-                  onSelect={(event) => event.preventDefault()}
-                >
-                  {FIELD_STATUS_LABEL[status]}
-                </DropdownMenuCheckboxItem>
-              ))}
+              {ALL_STATUSES.map((status) => {
+                const active = statusFilter.has(status);
+                return (
+                  <DropdownMenuItem
+                    key={status}
+                    className="justify-between gap-4"
+                    onSelect={(event) => event.preventDefault()}
+                    onClick={() => toggleStatusFilter(status)}
+                  >
+                    {FIELD_STATUS_LABEL[status]}
+                    {active && <Check className="h-3.5 w-3.5 text-primary" />}
+                  </DropdownMenuItem>
+                );
+              })}
               {statusFilter.size > 0 && (
                 <>
                   <DropdownMenuSeparator />
@@ -210,9 +236,9 @@ export function FieldTable({
           </DropdownMenu>
         </div>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="min-h-[280px] pt-0">
         {isLoading ? (
-          <p className="py-6 text-center text-sm text-muted-foreground">Loading fields...</p>
+          <FieldTableSkeleton />
         ) : fields.length === 0 ? (
           <p className="py-6 text-center text-sm text-muted-foreground">
             No fields yet — run the seed script to populate demo data.
@@ -234,7 +260,7 @@ export function FieldTable({
                 </TableHead>
                 <TableHead>Field Zone</TableHead>
                 <TableHead>Crop Type</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead className="text-center">Status</TableHead>
                 <TableHead>Soil Moisture</TableHead>
                 <TableHead>Temp.</TableHead>
                 <TableHead>Growth Stage</TableHead>
@@ -260,7 +286,7 @@ export function FieldTable({
                   </TableCell>
                   <TableCell className="font-medium">{field.name}</TableCell>
                   <TableCell className="text-muted-foreground">{field.cropType}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">
                     <Badge
                       variant="outline"
                       className={cn(
@@ -302,5 +328,56 @@ export function FieldTable({
         )}
       </CardContent>
     </Card>
+  );
+}
+
+function FieldTableSkeleton() {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow className="hover:bg-transparent">
+          <TableHead className="w-8">
+            <Skeleton className="h-4 w-4 rounded-[4px]" />
+          </TableHead>
+          <TableHead>Field Zone</TableHead>
+          <TableHead>Crop Type</TableHead>
+          <TableHead className="text-center">Status</TableHead>
+          <TableHead>Soil Moisture</TableHead>
+          <TableHead>Temp.</TableHead>
+          <TableHead>Growth Stage</TableHead>
+          <TableHead className="w-8" />
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {[0, 1, 2, 3, 4].map((i) => (
+          <TableRow key={i} className="hover:bg-transparent">
+            <TableCell>
+              <Skeleton className="h-4 w-4 rounded-[4px]" />
+            </TableCell>
+            <TableCell>
+              <Skeleton className="h-4 w-28" />
+            </TableCell>
+            <TableCell>
+              <Skeleton className="h-4 w-16" />
+            </TableCell>
+            <TableCell className="text-center">
+              <Skeleton className="mx-auto h-6 w-[76px] rounded-full" />
+            </TableCell>
+            <TableCell>
+              <Skeleton className="h-4 w-10" />
+            </TableCell>
+            <TableCell>
+              <Skeleton className="h-4 w-10" />
+            </TableCell>
+            <TableCell>
+              <Skeleton className="h-4 w-20" />
+            </TableCell>
+            <TableCell>
+              <Skeleton className="h-4 w-4" />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }

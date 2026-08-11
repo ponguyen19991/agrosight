@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import {
   BarChart3,
@@ -9,11 +10,13 @@ import {
   FileText,
   Info,
   LayoutDashboard,
+  LogOut,
   Moon,
   Settings,
   Sparkles,
   Sprout,
   Sun,
+  User,
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,7 +25,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: "Dashboard", active: true },
@@ -41,7 +52,7 @@ export function Sidebar({ onOpenChat }: SidebarProps) {
   return (
     <aside className="glass-panel-strong flex h-full w-16 shrink-0 flex-col items-center justify-between rounded-2xl py-4">
       <div className="flex flex-col items-center gap-2">
-        <div className="mb-3 flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl bg-white">
+        <div className="mb-3 flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl">
           <Image
             src="/images/logo-farm.png"
             alt="AgroSight logo"
@@ -70,11 +81,55 @@ export function Sidebar({ onOpenChat }: SidebarProps) {
 
       <div className="flex flex-col items-center gap-3">
         <ThemeToggle />
-        <Avatar className="h-8 w-8 border border-border">
-          <AvatarFallback className="bg-secondary text-xs">AS</AvatarFallback>
-        </Avatar>
+        <UserMenu />
       </div>
     </aside>
+  );
+}
+
+function UserMenu() {
+  const router = useRouter();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          aria-label="Account menu"
+          className="rounded-full transition-opacity hover:opacity-80"
+        >
+          <Avatar className="h-8 w-8 border border-border">
+            <AvatarImage src="/images/famer-user.png" alt="Account avatar" />
+            <AvatarFallback className="bg-secondary text-xs">AS</AvatarFallback>
+          </Avatar>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent side="right" align="end" className="w-48">
+        <DropdownMenuLabel className="flex flex-col">
+          <span>Adrian Sora</span>
+          <span className="text-xs font-normal text-muted-foreground">
+            Farm Manager
+          </span>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <User className="h-3.5 w-3.5" />
+          Profile
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Settings className="h-3.5 w-3.5" />
+          Account settings
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="text-destructive focus:text-destructive"
+          onClick={() => router.push("/login")}
+        >
+          <LogOut className="h-3.5 w-3.5" />
+          Log out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
