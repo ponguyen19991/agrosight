@@ -46,7 +46,7 @@ const SYSTEM_INFO = [
 
 export function AboutView() {
   return (
-    <div className="mx-auto flex max-w-3xl min-w-0 flex-col gap-3 sm:gap-4">
+    <div className="mx-auto flex min-h-[calc(100vh-2rem)] max-w-3xl min-w-0 flex-col gap-3 sm:gap-4">
       <Card className="glass-panel border-0">
         <CardContent className="pt-5">
           <div className="flex items-start justify-between gap-3">
