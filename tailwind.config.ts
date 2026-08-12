@@ -59,6 +59,20 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
+  		},
+  		keyframes: {
+  			'toast-progress': {
+  				from: { width: '100%' },
+  				to: { width: '0%' }
+  			},
+  			marquee: {
+  				from: { transform: 'translateX(0)' },
+  				to: { transform: 'translateX(-50%)' }
+  			}
+  		},
+  		animation: {
+  			'toast-progress': 'toast-progress linear forwards',
+  			marquee: 'marquee 32s linear infinite'
   		}
   	}
   },
