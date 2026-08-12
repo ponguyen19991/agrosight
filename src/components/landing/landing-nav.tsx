@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 import { ContactDialog } from "./contact-dialog";
 
 const NAV_LINKS = [
@@ -72,7 +73,7 @@ export function LandingNav() {
       )}
     >
       <nav className="mx-auto grid max-w-6xl grid-cols-2 items-center px-6 py-5 sm:px-10 md:grid-cols-3">
-        <Link href="/" className="flex items-center gap-2.5 justify-self-start text-white">
+        <Link href={ROUTES.home} className="flex items-center gap-2.5 justify-self-start text-white">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full shadow-lg">
             <Image
               src="/images/logo-primary.png"
@@ -106,7 +107,7 @@ export function LandingNav() {
 
         <div className="flex items-center gap-5 justify-self-end">
           <Link
-            href="/login"
+            href={ROUTES.login}
             className="hidden text-sm font-semibold text-white transition-colors hover:text-white/80 sm:inline-block"
           >
             Login

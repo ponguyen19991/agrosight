@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import {
   BarChart3,
@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 import {
   Tooltip,
   TooltipContent,
@@ -43,7 +44,7 @@ import {
 } from "@/components/ui/sheet";
 
 const NAV_ITEMS = [
-  { icon: LayoutDashboard, label: "Dashboard", active: true },
+  { icon: LayoutDashboard, label: "Dashboard", href: ROUTES.dashboard.root },
   { icon: Sprout, label: "Fields" },
   { icon: FileText, label: "Reports" },
   { icon: Users, label: "Team" },
@@ -56,6 +57,9 @@ interface SidebarProps {
 }
 
 export function Sidebar({ onOpenChat }: SidebarProps) {
+  const pathname = usePathname();
+  const router = useRouter();
+
   return (
     <aside className="glass-panel-strong hidden h-full w-16 shrink-0 flex-col items-center justify-between rounded-2xl py-4 lg:flex">
       <div className="flex flex-col items-center gap-2">
@@ -71,7 +75,13 @@ export function Sidebar({ onOpenChat }: SidebarProps) {
         </div>
 
         {NAV_ITEMS.map((item) => (
-          <NavIcon key={item.label} {...item} />
+          <NavIcon
+            key={item.label}
+            icon={item.icon}
+            label={item.label}
+            active={item.href ? pathname === item.href : false}
+            onClick={item.href ? () => router.push(item.href) : undefined}
+          />
         ))}
 
         <div className="my-1 h-px w-6 bg-border" />
@@ -83,7 +93,12 @@ export function Sidebar({ onOpenChat }: SidebarProps) {
           highlight
         />
         <NavIcon icon={Settings} label="Settings" />
-        <NavIcon icon={Info} label="About" />
+        <NavIcon
+          icon={Info}
+          label="About"
+          active={pathname === ROUTES.dashboard.about}
+          onClick={() => router.push(ROUTES.dashboard.about)}
+        />
       </div>
 
       <div className="flex flex-col items-center gap-3">
@@ -101,6 +116,9 @@ interface MobileSidebarProps {
 }
 
 export function MobileSidebar({ open, onOpenChange, onOpenChat }: MobileSidebarProps) {
+  const pathname = usePathname();
+  const router = useRouter();
+
   const closeThen = (fn?: () => void) => () => {
     fn?.();
     onOpenChange(false);
@@ -134,14 +152,25 @@ export function MobileSidebar({ open, onOpenChange, onOpenChat }: MobileSidebarP
 
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
           {NAV_ITEMS.map((item) => (
-            <MobileNavRow key={item.label} icon={item.icon} label={item.label} active={item.active} onClick={closeThen()} />
+            <MobileNavRow
+              key={item.label}
+              icon={item.icon}
+              label={item.label}
+              active={item.href ? pathname === item.href : false}
+              onClick={closeThen(item.href ? () => router.push(item.href) : undefined)}
+            />
           ))}
 
           <div className="my-2 h-px bg-border" />
 
           <MobileNavRow icon={Sparkles} label="AI Assistant" highlight onClick={closeThen(onOpenChat)} />
           <MobileNavRow icon={Settings} label="Settings" onClick={closeThen()} />
-          <MobileNavRow icon={Info} label="About" onClick={closeThen()} />
+          <MobileNavRow
+            icon={Info}
+            label="About"
+            active={pathname === ROUTES.dashboard.about}
+            onClick={closeThen(() => router.push(ROUTES.dashboard.about))}
+          />
         </nav>
 
         <div className="flex items-center justify-between border-t border-border px-4 py-3">
@@ -218,7 +247,7 @@ function UserMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="text-destructive focus:text-destructive"
-          onClick={() => router.push("/login")}
+          onClick={() => router.push(ROUTES.login)}
         >
           <LogOut className="h-3.5 w-3.5" />
           Log out

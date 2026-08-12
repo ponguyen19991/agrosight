@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
+import { ROUTES } from "@/lib/routes";
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -78,7 +79,7 @@ export function LoginForm() {
   // Prefetch the dashboard route so the post-login navigation itself is
   // instant — the delay below is just for the loading state to be visible.
   useLayoutEffect(() => {
-    router.prefetch("/dashboard");
+    router.prefetch(ROUTES.dashboard.root);
   }, [router]);
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -86,7 +87,7 @@ export function LoginForm() {
     if (isSubmitting) return;
     setIsSubmitting(true);
     // Demo only — no auth backend is wired up, this just takes you to the dashboard.
-    setTimeout(() => router.push("/dashboard"), 1000);
+    setTimeout(() => router.push(ROUTES.dashboard.root), 1000);
   };
 
   const handleRegisterSubmit = (event: React.FormEvent) => {
@@ -101,7 +102,7 @@ export function LoginForm() {
         title: "Thành công",
         description: "Tạo tài khoản thành công.",
       });
-      router.push("/dashboard");
+      router.push(ROUTES.dashboard.root);
     }, 1000);
   };
 
@@ -186,7 +187,7 @@ export function LoginForm() {
                     type="button"
                     variant="outline"
                     className="mt-6 h-11 w-full gap-2 text-base"
-                    onClick={() => router.push("/dashboard")}
+                    onClick={() => router.push(ROUTES.dashboard.root)}
                   >
                     <GoogleIcon />
                     Continue with Google
@@ -297,7 +298,7 @@ export function LoginForm() {
                     type="button"
                     variant="outline"
                     className="mt-6 h-11 w-full gap-2 text-base"
-                    onClick={() => router.push("/dashboard")}
+                    onClick={() => router.push(ROUTES.dashboard.root)}
                   >
                     <GoogleIcon />
                     Continue with Google

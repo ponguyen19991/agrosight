@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/routes";
 import { fraunces } from "./fonts";
 
 const AVATARS = [
@@ -46,7 +47,7 @@ export function HeroSection() {
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <Button asChild size="lg" className="h-12 bg-primary px-7 text-primary-foreground hover:bg-primary/90">
-            <Link href="/login">
+            <Link href={ROUTES.login}>
               Request Access
               <ArrowRight className="h-4 w-4" />
             </Link>

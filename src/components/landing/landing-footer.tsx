@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Mail } from "lucide-react";
+import { ROUTES } from "@/lib/routes";
 
 const COLUMNS = [
   {
@@ -68,7 +69,7 @@ export function LandingFooter() {
       <footer className="overflow-hidden rounded-3xl border border-white/10 bg-black/85 shadow-2xl backdrop-blur-xl">
         <div className="grid gap-12 p-8 sm:p-12 md:grid-cols-2 lg:grid-cols-4">
           <div>
-            <Link href="/" className="flex items-center gap-2.5 text-white">
+            <Link href={ROUTES.home} className="flex items-center gap-2.5 text-white">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full">
                 <Image
                   src="/images/logo-primary.png"
