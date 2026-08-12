@@ -76,7 +76,7 @@ export function HeroSection() {
               <span className="text-sm font-semibold text-white">4.9</span>
             </div>
             <div className="flex -space-x-3">
-              {AVATARS.map((src, i) => (
+              {AVATARS.map((src) => (
                 <span
                   key={src}
                   className="relative h-8 w-8 overflow-hidden rounded-full ring-2 ring-black"
