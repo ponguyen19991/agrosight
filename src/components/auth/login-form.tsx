@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -153,14 +154,16 @@ export function LoginForm() {
           }}
         >
           <div ref={formContentRef} className="w-full max-w-md">
-            <Image
-              src="/images/banner-non-bg.png"
-              alt="AgroSight"
-              width={517}
-              height={205}
-              className="h-16 w-auto object-contain object-left"
-              priority
-            />
+            <Link href={ROUTES.home} className="inline-block">
+              <Image
+                src="/images/banner-non-bg.png"
+                alt="AgroSight"
+                width={517}
+                height={205}
+                className="h-16 w-auto object-contain object-left"
+                priority
+              />
+            </Link>
 
             {/* Sliding viewport: clips the 2x-wide track and animates to
                 match the height of whichever form is currently active. */}
