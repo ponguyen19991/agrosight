@@ -57,3 +57,12 @@ export const RESOURCE_CATEGORY_COLOR_VAR: Record<string, string> = {
   PEST_CONTROL: "var(--chart-4)",
   LOGISTICS_DISTRIBUTION: "var(--chart-5)",
 };
+
+// Status is derived from the health score, not set directly (and never by
+// AI) — thresholds chosen so 86→Healthy, 68→Stable, 52→Warning, 31→Critical.
+export function deriveFieldStatus(healthScore: number): FieldStatus {
+  if (healthScore >= 80) return "HEALTHY";
+  if (healthScore >= 60) return "STABLE";
+  if (healthScore >= 40) return "WARNING";
+  return "CRITICAL";
+}

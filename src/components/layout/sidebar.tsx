@@ -22,6 +22,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/lib/routes";
+import { type Role } from "@/lib/roles";
+import { useRolePreview } from "@/hooks/use-role-preview";
 import {
   Tooltip,
   TooltipContent,
@@ -43,13 +45,23 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 
-const NAV_ITEMS = [
+const NAV_ITEMS: {
+  icon: React.ElementType;
+  label: string;
+  href?: string;
+  roles?: Role[];
+}[] = [
   { icon: LayoutDashboard, label: "Dashboard", href: ROUTES.dashboard.root },
-  { icon: Sprout, label: "Fields" },
-  { icon: FileText, label: "Reports" },
-  { icon: Users, label: "Team" },
-  { icon: BookOpen, label: "Knowledge Base" },
-  { icon: BarChart3, label: "Analytics" },
+  { icon: Sprout, label: "Fields", href: ROUTES.dashboard.fields },
+  { icon: FileText, label: "Reports", href: ROUTES.dashboard.reports },
+  { icon: BookOpen, label: "Knowledge Base", href: ROUTES.dashboard.knowledgeBase },
+  {
+    icon: BarChart3,
+    label: "Analytics",
+    href: ROUTES.dashboard.analytics,
+    roles: ["owner", "manager", "agronomist"],
+  },
+  { icon: Users, label: "Team", href: ROUTES.dashboard.team, roles: ["owner", "manager"] },
 ];
 
 interface SidebarProps {
@@ -59,6 +71,9 @@ interface SidebarProps {
 export function Sidebar({ onOpenChat }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { role } = useRolePreview();
+  const visibleNavItems = NAV_ITEMS.filter((item) => !item.roles || item.roles.includes(role));
+  const canViewSettings = role === "owner" || role === "manager";
 
   return (
     <aside className="glass-panel-strong hidden h-full w-16 shrink-0 flex-col items-center justify-between rounded-2xl py-4 lg:flex">
@@ -74,15 +89,18 @@ export function Sidebar({ onOpenChat }: SidebarProps) {
           />
         </div>
 
-        {NAV_ITEMS.map((item) => (
-          <NavIcon
-            key={item.label}
-            icon={item.icon}
-            label={item.label}
-            active={item.href ? pathname === item.href : false}
-            onClick={item.href ? () => router.push(item.href) : undefined}
-          />
-        ))}
+        {visibleNavItems.map((item) => {
+          const href = item.href;
+          return (
+            <NavIcon
+              key={item.label}
+              icon={item.icon}
+              label={item.label}
+              active={href ? pathname === href : false}
+              onClick={href ? () => router.push(href) : undefined}
+            />
+          );
+        })}
 
         <div className="my-1 h-px w-6 bg-border" />
 
@@ -92,7 +110,14 @@ export function Sidebar({ onOpenChat }: SidebarProps) {
           onClick={onOpenChat}
           highlight
         />
-        <NavIcon icon={Settings} label="Settings" />
+        {canViewSettings && (
+          <NavIcon
+            icon={Settings}
+            label="Settings"
+            active={pathname === ROUTES.dashboard.settings}
+            onClick={() => router.push(ROUTES.dashboard.settings)}
+          />
+        )}
         <NavIcon
           icon={Info}
           label="About"
@@ -118,6 +143,9 @@ interface MobileSidebarProps {
 export function MobileSidebar({ open, onOpenChange, onOpenChat }: MobileSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { role } = useRolePreview();
+  const visibleNavItems = NAV_ITEMS.filter((item) => !item.roles || item.roles.includes(role));
+  const canViewSettings = role === "owner" || role === "manager";
 
   const closeThen = (fn?: () => void) => () => {
     fn?.();
@@ -151,20 +179,30 @@ export function MobileSidebar({ open, onOpenChange, onOpenChat }: MobileSidebarP
         </SheetHeader>
 
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
-          {NAV_ITEMS.map((item) => (
-            <MobileNavRow
-              key={item.label}
-              icon={item.icon}
-              label={item.label}
-              active={item.href ? pathname === item.href : false}
-              onClick={closeThen(item.href ? () => router.push(item.href) : undefined)}
-            />
-          ))}
+          {visibleNavItems.map((item) => {
+            const href = item.href;
+            return (
+              <MobileNavRow
+                key={item.label}
+                icon={item.icon}
+                label={item.label}
+                active={href ? pathname === href : false}
+                onClick={closeThen(href ? () => router.push(href) : undefined)}
+              />
+            );
+          })}
 
           <div className="my-2 h-px bg-border" />
 
           <MobileNavRow icon={Sparkles} label="AI Assistant" highlight onClick={closeThen(onOpenChat)} />
-          <MobileNavRow icon={Settings} label="Settings" onClick={closeThen()} />
+          {canViewSettings && (
+            <MobileNavRow
+              icon={Settings}
+              label="Settings"
+              active={pathname === ROUTES.dashboard.settings}
+              onClick={closeThen(() => router.push(ROUTES.dashboard.settings))}
+            />
+          )}
           <MobileNavRow
             icon={Info}
             label="About"

@@ -35,7 +35,7 @@ const STEPS = [
     title: "Act",
     subtitle: "Apply & Track Results",
     location: "Mekong Delta, Vietnam",
-    imageSrc: undefined as string | undefined,
+    imageSrc: "/images/agrosight_act_step.png" as string | undefined,
   },
 ] as const;
 

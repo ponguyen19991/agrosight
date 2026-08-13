@@ -27,6 +27,10 @@ export interface FieldSummary {
   fertilizerEfficiencyPct: number;
   equipmentStatus: EquipmentStatus;
   boundary: GeoJsonPolygon;
+  notes: string | null;
+  assignedManagerName: string | null;
+  irrigationType: string | null;
+  plantingDate: string | null;
 }
 
 export interface ResourceAllocationSummary {

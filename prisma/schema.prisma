@@ -47,6 +47,11 @@ model Field {
   // GeoJSON Polygon geometry, e.g. { "type": "Polygon", "coordinates": [[[lng,lat], ...]] }
   boundary  Json
 
+  notes               String?
+  assignedManagerName String?
+  irrigationType      String?
+  plantingDate        DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -27,6 +27,12 @@ export interface WeatherResponse {
     temperatureMinC: number;
     precipitationProbabilityPct: number;
   };
+  forecast: {
+    date: string;
+    temperatureMaxC: number;
+    temperatureMinC: number;
+    precipitationProbabilityPct: number;
+  }[];
 }
 
 // WMO weather interpretation codes: https://open-meteo.com/en/docs
@@ -84,5 +90,11 @@ export async function getWeather(lat: number, lng: number): Promise<WeatherRespo
         data.daily.precipitation_probability_max[0] ?? 0
       ),
     },
+    forecast: (data.daily.time as string[]).map((date: string, i: number) => ({
+      date,
+      temperatureMaxC: Math.round(data.daily.temperature_2m_max[i]),
+      temperatureMinC: Math.round(data.daily.temperature_2m_min[i]),
+      precipitationProbabilityPct: Math.round(data.daily.precipitation_probability_max[i] ?? 0),
+    })),
   };
 }

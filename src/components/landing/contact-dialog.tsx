@@ -30,8 +30,8 @@ export function ContactDialog({ children }: { children: React.ReactNode }) {
       setOpen(false);
       toast({
         variant: "success",
-        title: "Thành công",
-        description: "Tin nhắn của bạn đã được gửi. Đội ngũ AgroSight sẽ liên hệ sớm.",
+        title: "Success",
+        description: "Your message has been sent. The AgroSight team will reach out soon.",
       });
     }, 1000);
   };

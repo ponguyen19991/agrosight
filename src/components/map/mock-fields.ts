@@ -34,7 +34,10 @@ function organicPolygon(
 }
 
 const MOCK_FIELD_INPUTS: Array<
-  Omit<FieldSummary, "id" | "farmId" | "boundary"> & {
+  Omit<
+    FieldSummary,
+    "id" | "farmId" | "boundary" | "notes" | "assignedManagerName" | "irrigationType" | "plantingDate"
+  > & {
     offset: { lat: number; lng: number };
   }
 > = [
@@ -129,6 +132,10 @@ export const MOCK_FIELDS: FieldSummary[] = MOCK_FIELD_INPUTS.map((input, index) 
     id: `mock-${index}`,
     farmId: "mock-farm",
     boundary: organicPolygon(centerLat, centerLng, 0.0045, index + 1),
+    notes: null,
+    assignedManagerName: null,
+    irrigationType: null,
+    plantingDate: null,
   };
 });
 

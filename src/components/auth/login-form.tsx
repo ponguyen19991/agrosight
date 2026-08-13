@@ -100,8 +100,8 @@ export function LoginForm() {
     setTimeout(() => {
       toast({
         variant: "success",
-        title: "Thành công",
-        description: "Tạo tài khoản thành công.",
+        title: "Success",
+        description: "Your account has been created.",
       });
       router.push(ROUTES.dashboard.root);
     }, 1000);

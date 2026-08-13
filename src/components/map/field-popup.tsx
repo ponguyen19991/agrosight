@@ -36,7 +36,7 @@ export function FieldPopup({ field, onClose }: FieldPopupProps) {
       <div className="mt-2 flex items-center justify-between">
         <Stat value={`${field.humidityPct}%`} label="Humidity" />
         <Stat value={field.phLevel.toFixed(1)} label="Ph Level" />
-        <Stat value={field.areaHectares.toString()} label="Hectare" />
+        <Stat value={field.areaHectares.toFixed(1)} label="Hectare" />
       </div>
 
       <div className="mt-3 space-y-2 border-t border-border pt-3">

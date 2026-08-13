@@ -9,5 +9,19 @@ export const ROUTES = {
   dashboard: {
     root: "/dashboard",
     about: "/dashboard/about",
+    settings: "/dashboard/settings",
+    analytics: "/dashboard/analytics",
+    knowledgeBase: "/dashboard/knowledge",
+    reports: "/dashboard/reports",
+    team: "/dashboard/team",
+    fields: "/dashboard/fields",
   },
 } as const;
+
+export function reportDetailRoute(id: string) {
+  return `${ROUTES.dashboard.reports}/${id}`;
+}
+
+export function fieldDetailRoute(id: string) {
+  return `${ROUTES.dashboard.fields}/${id}`;
+}
